@@ -1,0 +1,6 @@
+name = "tzf-cf"
+main = "build/worker/shim.mjs"
+compatibility_date = "2024-09-03"
+
+[build]
+command = "cargo install -q worker-build && worker-build --release"
