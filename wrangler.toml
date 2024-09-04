@@ -6,3 +6,8 @@ send_metrics = false
 
 [build]
 command = "cargo install -q worker-build && worker-build --release"
+
+# [[r2_buckets]]
+# binding = "foo"
+# bucket_name = "foo"
+# preview_bucket_name = "foo"

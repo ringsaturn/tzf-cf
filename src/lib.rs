@@ -1,16 +1,22 @@
 use axum::{extract::Query, routing::get, Router};
-use lazy_static::lazy_static;
+use reqwest;
 use serde::Deserialize;
 use tower_service::Service;
-use tzf_rs::DefaultFinder;
+use tzf_rs::gen;
+use tzf_rs::Finder;
 use worker::*;
-
-lazy_static! {
-    static ref FINDER: DefaultFinder = DefaultFinder::new();
-}
 
 fn router() -> Router {
     Router::new().route("/", get(get_tz))
+}
+
+async fn new_finder_via_download() -> Finder {
+    let download_url: &str =
+        "https://github.com/ringsaturn/tzf-rel-lite/raw/main/combined-with-oceans.reduce.pb";
+    let resp: reqwest::Response = reqwest::get(download_url).await.unwrap();
+    let file_bytes: axum::body::Bytes = resp.bytes().await.unwrap();
+    let file_bytes: Vec<u8> = file_bytes.to_vec();
+    Finder::from_pb(gen::Timezones::try_from(file_bytes).unwrap_or_default())
 }
 
 #[event(fetch)]
@@ -31,10 +37,15 @@ pub struct Params {
 }
 
 pub async fn get_tz(Query(params): Query<Params>) -> String {
-    let lng = params.lng;
-    let lat = params.lat;
+
     // let lng = 116.4074;
     // let lat = 39.9042;
-    let tz = FINDER.get_tz_name(lng, lat);
+    // let tz = "{lng},{lat}""
+    // let tz = format!("{lng},{lat}");
+    let lng = params.lng;
+    let lat = params.lat;
+    let f = new_finder_via_download().await;
+
+    let tz = f.get_tz_name(lng, lat);
     tz.to_string()
 }
