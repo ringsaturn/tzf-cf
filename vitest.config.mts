@@ -1,4 +1,6 @@
 import { defineWorkersConfig } from '@cloudflare/vitest-pool-workers/config';
+import wasmPack from 'vite-plugin-wasm-pack';
+
 
 export default defineWorkersConfig({
 	test: {
@@ -8,4 +10,9 @@ export default defineWorkersConfig({
 			},
 		},
 	},
+	optimizeDeps: {
+		exclude: ['@wasmer/sdk', 'tzf-wasm'],
+		disabled: true,
+	},
+	plugins: [wasmPack([], ['tzf-wasm'])]
 });

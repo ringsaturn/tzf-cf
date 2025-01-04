@@ -12,8 +12,16 @@
   "devDependencies": {
     "@cloudflare/vitest-pool-workers": "^0.5.2",
     "@cloudflare/workers-types": "^4.20241230.0",
+    "@types/bun": "latest",
     "typescript": "^5.5.2",
     "vitest": "2.1.8",
     "wrangler": "^3.60.3"
-  }
+  },
+  "dependencies": {
+    "import-meta-resolve": "^4.1.0",
+    "tzf-wasm": "^0.1.4",
+    "vite-plugin-wasm-pack": "^0.1.12"
+  },
+  "module": "index.ts",
+  "type": "module"
 }
